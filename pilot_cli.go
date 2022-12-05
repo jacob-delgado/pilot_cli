@@ -274,7 +274,7 @@ func main() {
 	proxyType := flag.String("proxytype", "", "sidecar, ingress, router.")
 	proxyTag := flag.String("proxytag", "", "Pod name or app label or istio label to identify the proxy.")
 	resources := flag.String("res", "", "Resource(s) to get config for. LDS/CDS should leave it empty.")
-	outputFile := flag.String("out", "", "output file. Leave blank to go to stdout")
+	//outputFile := flag.String("out", "", "output file. Leave blank to go to stdout")
 	flag.Parse()
 
 	process, pilot, err := portForwardPilot(resolveKubeConfigPath(*kubeConfig), *pilotURL)
@@ -307,6 +307,7 @@ func main() {
 		log.Errorf("Failed to get Xds response for %v. Error: %v", *resources, err)
 		return
 	}
+	log.Infof("got response: %+v", resp)
 	//strResponse, _ := gogoprotomarshal.ToJSONWithIndent(resp, " ")
 	//if outputFile == nil || *outputFile == "" {
 	//	fmt.Printf("%v\n", strResponse)
