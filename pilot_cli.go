@@ -71,7 +71,6 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 
 	v3 "istio.io/istio/pilot/pkg/xds/v3"
-	"istio.io/istio/pkg/util/gogoprotomarshal"
 	"istio.io/pkg/env"
 	"istio.io/pkg/log"
 )
@@ -308,10 +307,10 @@ func main() {
 		log.Errorf("Failed to get Xds response for %v. Error: %v", *resources, err)
 		return
 	}
-	strResponse, _ := gogoprotomarshal.ToJSONWithIndent(resp, " ")
-	if outputFile == nil || *outputFile == "" {
-		fmt.Printf("%v\n", strResponse)
-	} else if err := os.WriteFile(*outputFile, []byte(strResponse), 0o644); err != nil {
-		log.Errorf("Cannot write output to file %q", *outputFile)
-	}
+	//strResponse, _ := gogoprotomarshal.ToJSONWithIndent(resp, " ")
+	//if outputFile == nil || *outputFile == "" {
+	//	fmt.Printf("%v\n", strResponse)
+	//} else if err := os.WriteFile(*outputFile, []byte(strResponse), 0o644); err != nil {
+	//	log.Errorf("Cannot write output to file %q", *outputFile)
+	//}
 }
