@@ -53,6 +53,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	structpb "github.com/golang/protobuf/ptypes/struct"
 	"math/rand"
 	"net"
 	"os"
@@ -170,9 +171,41 @@ func configTypeToTypeURL(configType string) string {
 }
 
 func (p PodInfo) makeRequest(configType string) *discovery.DiscoveryRequest {
+	metadata := structpb.Struct{
+		Fields: map[string]*structpb.Value{
+			"proxy.istio.io/config": {
+				Kind: &structpb.Value_StringValue{
+					StringValue: "proxyMetadata:\n  INBOUND_LISTENER_EXACT_BALANCE: \"true\"\n  OUTBOUND_LISTENER_EXACT_BALANCE: \"true\"\n",
+				},
+			},
+			"PROXY_CONFIG": {
+				Kind: &structpb.Value_StructValue{
+					StructValue: &structpb.Struct{
+						Fields: map[string]*structpb.Value{
+							"proxyMetadata": {
+								Kind: &structpb.Value_StructValue{
+									StructValue: &structpb.Struct{
+										Fields: map[string]*structpb.Value{
+											"INBOUND_LISTENER_EXACT_BALANCE": {
+												Kind: &structpb.Value_StringValue{StringValue: "true"},
+											},
+											"OUTBOUND_LISTENER_EXACT_BALANCE": {
+												Kind: &structpb.Value_StringValue{StringValue: "true"},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
 	return &discovery.DiscoveryRequest{
 		Node: &core.Node{
-			Id: p.makeNodeID(),
+			Id:       p.makeNodeID(),
+			Metadata: &metadata,
 		},
 		TypeUrl: configTypeToTypeURL(configType),
 	}
